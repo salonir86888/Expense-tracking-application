@@ -1,4 +1,3 @@
-// Global Configuration
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '')
-    ? 'http://localhost:5000'
-    : window.location.origin; // Automatically uses your live Vercel URL in production
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000'
+  : ''; // Blank relative string so Vercel forwards requests to its own serverless functions
