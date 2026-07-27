@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUREUM | Sovereign Capital Oversight</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- CSS Link -->
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <!-- ==========================================
+       1. FIXED TOP NAVBAR
+       ========================================== -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">AUREUM</a>
+
+      <nav class="nav-links">
+        <a href="#portfolio" class="active">PORTFOLIO</a>
+        <a href="#insights">INSIGHTS</a>
+        <a href="#vault">VAULT</a>
+        <a href="#concierge">CONCIERGE</a>
+      </nav>
+
+    <div class="nav-actions">
+        <!-- Direct Link to Authentication Page -->
+        <a href="authentication.html" class="nav-link-btn">SIGN IN</a>
+        <a href="authentication.html" class="btn-get-started">GET STARTED</a>
+      </div>
+    </div>
+  </header>  
+
+  <!-- ==========================================
+       2. HERO LANDING SECTION
+       ========================================== -->
+  <main class="hero-section">
+    <div class="hero-container">
+      <!-- Left Content -->
+      <div class="hero-content">
+        <p class="hero-subtitle">The Zenith of Capital Oversight</p>
+        
+        <h1 class="hero-title">
+          Master Your Capital,<br>
+          <span class="hero-title-italic">Rule Your Legacy</span>
+        </h1>
+        
+        <p class="hero-description">
+          Meticulous budget creation and frictionless expense management engineered for the sovereign individual. Gain absolute clarity over every global transaction.
+        </p>
+
+        <div class="hero-actions">
+          <a href="authentication.html" class="btn-text">Create Profile</a>
+          <a href="authentication.html" class="btn-outline">Request Invitation</a>
+        </div>
+      </div>
+
+      <!-- Right Image Frame -->
+      <div class="hero-image-wrapper">
+        <div class="hero-image-frame">
+          <img src="assets/image/hero-tablet.jpg" alt="AUREUM Analytics Dashboard Preview">
+        </div>
+      </div>
+    </div>
+  </main>
+
+  
+  <!-- ==========================================
+       3. FIDUCIARY PRECISION (INTERACTIVE CARDS)
+       ========================================== -->
+  <section id="insights" class="fiduciary-section reveal-on-scroll">
+    <div class="section-header">
+      <h2 class="section-title">FIDUCIARY PRECISION</h2>
+      <div class="title-underline"></div>
+    </div>
+
+    <div class="cards-grid">
+      <!-- Card 1 -->
+      <div class="info-card">
+        <div class="card-icon">💼</div>
+        <h3 class="card-title">Intelligent Budgeting</h3>
+        <p class="card-desc">
+          Create custom limits across all spending categories with granular control. Tailor your fiscal boundaries to match your lifestyle ambitions.
+        </p>
+        <a href="authentication.html" class="card-link">DEFINE LIMITS &rarr;</a>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="info-card">
+        <div class="card-icon">📋</div>
+        <h3 class="card-title">Automated Ledger</h3>
+        <p class="card-desc">
+          Seamlessly track every transaction with real-time AI categorization. From private aviation to art acquisitions, every cent is accounted for.
+        </p>
+        <a href="authentication.html" class="card-link">REVIEW TRANSACTIONS &rarr;</a>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="info-card">
+        <div class="card-icon">📈</div>
+        <h3 class="card-title">Fiscal Projections</h3>
+        <p class="card-desc">
+          Advanced analytics to predict future spending patterns. Visualize your wealth's trajectory with probabilistic modeling and trend analysis.
+        </p>
+        <a href="authentication.html" class="card-link">FORECAST FUTURE &rarr;</a>
+      </div>
+    </div>
+  </section>
+  <!-- ==========================================
+       4. TESTIMONIAL / QUOTE SECTION
+       ========================================== -->
+  <section class="testimonial-section reveal-on-scroll">
+    <div class="testimonial-container">
+      <div class="quote-mark">“</div>
+      <blockquote class="quote-text">
+        "Aureum has redefined how I perceive my financial footprint. It is no longer just a ledger; it is a meticulously curated gallery of my life's achievements."
+      </blockquote>
+      <div class="author-name">JULIAN V. STERLING</div>
+      <div class="author-role">Global Wealth Custodian</div>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       5. START YOUR LEDGER (WHITE CTA BANNER)
+       ========================================== -->
+  <section class="cta-banner-section reveal-on-scroll">
+    <div class="cta-banner-box">
+      <h2 class="cta-title">Start Your Ledger</h2>
+      <p class="cta-desc">
+        Join an exclusive network of high-net-worth individuals who demand perfection in financial stewardship. Your automated accounting ecosystem is waiting.
+      </p>
+    </div>
+  </section>
+
+  <!-- ==========================================
+       6. LUXURY FOOTER
+       ========================================== -->
+  <footer class="luxury-footer">
+    <div class="footer-container">
+      <div class="footer-left">
+        <a href="#" class="footer-logo">AUREUM</a>
+        <p class="copyright">&copy; 2026 AUREUM PRIVATE VAULT. ALL RIGHTS RESERVED.</p>
+      </div>
+      <div class="footer-right">
+        <a href="#">PRIVACY</a>
+        <a href="#">TERMS</a>
+        <a href="#">SECURITY</a>
+        <a href="#">SUPPORT</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="assets/js/main.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const revealElements = document.querySelectorAll(".reveal-on-scroll");
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      });
+    }, { threshold: 0.1 });
+
+    revealElements.forEach((el) => observer.observe(el));
+  });
+</script>
+</body>
+</html>

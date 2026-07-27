@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUREUM | Authentication Terminal</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: #fcfbf8; color: #1a1a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; }
+
+    .auth-container { width: 900px; max-width: 95%; height: 550px; background: #ffffff; border: 1px solid #f0ece1; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); position: relative; overflow: hidden; display: flex; }
+
+    .form-container { width: 50%; height: 100%; padding: 50px 40px; display: flex; flex-direction: column; justify-content: space-between; position: absolute; top: 0; transition: all 0.6s ease-in-out; }
+    .sign-in-container { left: 0; z-index: 2; }
+    .sign-up-container { left: 0; opacity: 0; z-index: 1; }
+
+    .auth-container.right-panel-active .sign-in-container { transform: translateX(100%); opacity: 0; z-index: 1; }
+    .auth-container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; }
+
+    .brand-header { display: flex; align-items: center; gap: 10px; }
+    .brand-logo { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; color: #c5a059; letter-spacing: 2px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+
+    .form-title { font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .form-sub { font-size: 0.8rem; color: #71717a; margin-bottom: 25px; }
+
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; font-size: 0.7rem; font-weight: 600; color: #64748b; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .form-group input { width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; font-size: 0.85rem; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus { border-color: #c5a059; background: #ffffff; }
+
+    .btn-submit { width: 100%; background: #c5a059; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+    .btn-submit:hover { background: #b38f48; }
+
+    .toggle-link { text-align: center; font-size: 0.8rem; color: #71717a; margin-top: 15px; }
+    .toggle-link span { color: #c5a059; font-weight: 600; cursor: pointer; text-decoration: underline; margin-left: 4px; }
+
+    /* OVERLAY / BANNER CONTAINER */
+    .overlay-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100; }
+    .auth-container.right-panel-active .overlay-container { transform: translateX(-100%); }
+
+    .overlay { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center; color: #ffffff; position: relative; left: -100%; height: 100%; width: 200%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
+    .auth-container.right-panel-active .overlay { transform: translateX(50%); }
+
+    .overlay-panel { position: absolute; display: flex; align-items: flex-start; justify-content: flex-end; flex-direction: column; padding: 50px 40px; text-align: left; top: 0; height: 100%; width: 50%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
+    .overlay-right { right: 0; transform: translateX(0); }
+    .overlay-left { transform: translateX(-20%); }
+    .auth-container.right-panel-active .overlay-left { transform: translateX(0); }
+    .auth-container.right-panel-active .overlay-right { transform: translateX(20%); }
+
+    .overlay-title { font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+    .overlay-desc { font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; }
+
+    .form-footer { font-size: 0.7rem; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center; }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container" id="authContainer">
+    
+    <!-- SIGN IN FORM -->
+    <div class="form-container sign-in-container">
+      <div class="brand-header">
+        <a href="#" class="brand-logo"><i class="fa-solid fa-landmark"></i> A U R E U M</a>
+      </div>
+
+      <form id="signInForm">
+        <h2 class="form-title">Sign in</h2>
+        <p class="form-sub">Welcome back to The Royal Ledger asset terminal.</p>
+
+        <div class="form-group">
+          <label>EMAIL ADDRESS</label>
+          <input type="email" id="signInEmail" placeholder="e.g. user@aureum.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>KEYPHRASE CODE</label>
+          <input type="password" id="signInPassword" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-submit">INITIALIZE SESSION</button>
+
+        <div class="toggle-link">
+          No account? <span id="toSignUp">Sign up</span>
+        </div>
+      </form>
+
+      <div class="form-footer">
+        <span>© 2026 Aureum Sovereign Wealth.</span>
+        <span><i class="fa-solid fa-shield"></i></span>
+      </div>
+    </div>
+
+    <!-- SIGN UP FORM -->
+    <div class="form-container sign-up-container">
+      <div class="brand-header">
+        <a href="#" class="brand-logo"><i class="fa-solid fa-landmark"></i> A U R E U M</a>
+      </div>
+
+      <form id="signUpForm">
+        <h2 class="form-title">Create Account</h2>
+        <p class="form-sub">Begin your journey with private asset management.</p>
+
+        <div class="form-group">
+          <label>FULL NAME</label>
+          <input type="text" id="signUpName" placeholder="e.g. Alexander Vance" required>
+        </div>
+
+        <div class="form-group">
+          <label>EMAIL ADDRESS</label>
+          <input type="email" id="signUpEmail" placeholder="e.g. user@aureum.com" required>
+        </div>
+
+        <div class="form-group">
+          <label>KEYPHRASE CODE</label>
+          <input type="password" id="signUpPassword" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn-submit">REGISTER VAULT</button>
+
+        <div class="toggle-link">
+          Already registered? <span id="toSignIn">Sign in</span>
+        </div>
+      </form>
+
+      <div class="form-footer">
+        <span>© 2026 Aureum Sovereign Wealth.</span>
+        <span><i class="fa-solid fa-shield"></i></span>
+      </div>
+    </div>
+
+    <!-- OVERLAY CONTAINER -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-right">
+          <h1 class="overlay-title">Start Your<br>Global Legacy</h1>
+          <p class="overlay-desc">Navigate the complexities of international asset tracking with precision framework architecture. Your sovereign capital balance, secured elegantly.</p>
+        </div>
+        <div class="overlay-panel overlay-left">
+          <h1 class="overlay-title">Secure Your<br>Wealth Vault</h1>
+          <p class="overlay-desc">Join an elite tier of asset allocation and expense monitoring. Streamlined, confidential, and completely aligned with your financial vision.</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const authContainer = document.getElementById('authContainer');
+    const toSignUp = document.getElementById('toSignUp');
+    const toSignIn = document.getElementById('toSignIn');
+
+    // Panel Toggle Events
+    if (toSignUp) {
+      toSignUp.addEventListener('click', () => {
+        authContainer.classList.add('right-panel-active');
+      });
+    }
+
+    if (toSignIn) {
+      toSignIn.addEventListener('click', () => {
+        authContainer.classList.remove('right-panel-active');
+      });
+    }
+
+    // 1. SIGN IN SUBMIT (POST /api/auth/login)
+    document.getElementById('signInForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('signInEmail').value;
+      const password = document.getElementById('signInPassword').value;
+      const submitBtn = this.querySelector('.btn-submit');
+
+      submitBtn.innerText = "AUTHENTICATING...";
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          window.location.href = 'dashboard.html';
+        } else {
+          alert(data.message || 'Authentication failed. Please check credentials.');
+        }
+      } catch (error) {
+        console.error('Login Error:', error);
+        alert('Server connection failed. Is Node backend running on port 5000?');
+      } finally {
+        submitBtn.innerText = "INITIALIZE SESSION";
+        submitBtn.disabled = false;
+      }
+    });
+
+    // 2. SIGN UP SUBMIT (POST /api/auth/register)
+    document.getElementById('signUpForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const name = document.getElementById('signUpName').value;
+      const email = document.getElementById('signUpEmail').value;
+      const password = document.getElementById('signUpPassword').value;
+      const submitBtn = this.querySelector('.btn-submit');
+
+      submitBtn.innerText = "CREATING VAULT...";
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          alert('Vault Created Successfully!');
+          window.location.href = 'dashboard.html';
+        } else {
+          alert(data.message || 'Registration failed.');
+        }
+      } catch (error) {
+        console.error('Register Error:', error);
+        alert('Server connection failed. Is Node backend running on port 5000?');
+      } finally {
+        submitBtn.innerText = "REGISTER VAULT";
+        submitBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUREUM | Tier Management</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(8px); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+    .modal-box { background: #ffffff; width: 820px; border-radius: 20px; padding: 45px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .close-btn { position: absolute; right: 25px; top: 25px; color: #94a3b8; cursor: pointer; font-size: 1.2rem; text-decoration: none; transition: color 0.2s; }
+    .close-btn:hover { color: #0f172a; }
+
+    .modal-title { font-size: 1.6rem; font-weight: 700; color: #0f172a; }
+    .modal-sub { font-size: 0.8rem; color: #64748b; margin-top: 4px; }
+
+    .tier-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 35px; }
+    
+    .tier-card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; }
+    .tier-card.featured { border: 2px solid #c5a059; position: relative; }
+    
+    .badge { position: absolute; top: -13px; left: 50%; transform: translateX(-50%); background: #c5a059; color: white; font-size: 0.65rem; font-weight: 800; padding: 4px 14px; border-radius: 12px; letter-spacing: 1px; }
+
+    .tier-name { font-size: 1.2rem; font-weight: 700; color: #0f172a; }
+    .tier-desc { font-size: 0.75rem; color: #64748b; margin-top: 2px; }
+
+    .tier-price { font-size: 2.2rem; font-weight: 700; color: #0f172a; margin: 20px 0; }
+    .tier-price span { font-size: 0.85rem; color: #94a3b8; font-weight: 400; }
+
+    .feature-list { list-style: none; display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }
+    .feature-list li { font-size: 0.8rem; color: #475569; display: flex; align-items: center; gap: 10px; }
+    .feature-list i { color: #c5a059; font-size: 0.85rem; }
+
+    .btn-current { background: #f1f5f9; color: #64748b; border: none; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px; width: 100%; text-align: center; }
+    .btn-elevate { background: #c5a059; color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 0.75rem; letter-spacing: 1px; width: 100%; text-align: center; cursor: pointer; transition: opacity 0.2s; }
+    .btn-elevate:hover { opacity: 0.9; }
+  </style>
+</head>
+<body>
+
+  <div class="modal-box">
+    <a href="dashboard.html" class="close-btn"><i class="fa-solid fa-xmark"></i></a>
+    <h2 class="modal-title">Tier Management</h2>
+    <p class="modal-sub">Unlock next-generation premium financial telemetry features.</p>
+
+    <div class="tier-grid">
+      <!-- Sovereign Tier -->
+      <div class="tier-card" id="sovereignCard">
+        <div>
+          <div class="tier-name">Sovereign Tier</div>
+          <div class="tier-desc">Standard private liquidity tools</div>
+          <div class="tier-price">$0 <span>/ month</span></div>
+          <ul class="feature-list">
+            <li><i class="fa-solid fa-circle-check"></i> 5 Active Structural Budgets</li>
+            <li><i class="fa-solid fa-circle-check"></i> Condensed Expense Ledger Logs</li>
+            <li><i class="fa-solid fa-circle-check"></i> Manual Data Sync Processing</li>
+          </ul>
+        </div>
+        <button class="btn-current" id="sovereignBtn">CURRENT MEMBERSHIP</button>
+      </div>
+
+      <!-- Regal Elite Plan -->
+      <div class="tier-card featured" id="regalCard">
+        <span class="badge">HIGHLY RECOMMENDED</span>
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <div class="tier-name">Regal Elite Plan</div>
+              <div class="tier-desc">Institutional infrastructure systems</div>
+            </div>
+            <span style="background: #fef3c7; color: #b45309; font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 4px;">★ PREMIUM</span>
+          </div>
+          <div class="tier-price">$49 <span>/ month</span></div>
+          <ul class="feature-list">
+            <li><i class="fa-solid fa-circle-check"></i> Unlimited Active System Budgets</li>
+            <li><i class="fa-solid fa-circle-check"></i> Live Automated Market Sync Engines</li>
+            <li><i class="fa-solid fa-circle-check"></i> AI Allocation Risk Mitigation Modals</li>
+          </ul>
+        </div>
+        <button class="btn-elevate" id="elevateBtn">ELEVATE ACCOUNT KEYS</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load current tier status on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const currentTier = localStorage.getItem('aureum_tier') || 'Sovereign';
+      const elevateBtn = document.getElementById('elevateBtn');
+
+      if (currentTier === 'Regal Elite') {
+        elevateBtn.innerText = 'ACTIVE MEMBERSHIP';
+        elevateBtn.style.background = '#0f172a';
+      }
+    });
+
+    // Elevate Account Key Click Handler
+    document.getElementById('elevateBtn').addEventListener('click', function() {
+      const currentTier = localStorage.getItem('aureum_tier');
+
+      if (currentTier === 'Regal Elite') {
+        alert("ℹ️ You are already subscribed to the Regal Elite Plan!");
+        window.location.href = "dashboard.html";
+        return;
+      }
+
+      // 1. Save Plan in LocalStorage
+      localStorage.setItem('aureum_tier', 'Regal Elite');
+
+      // 2. Show Success Notification
+      alert("✨ Success! Your account keys have been elevated to REGAL ELITE TIER ($49/mo).");
+
+      // 3. Redirect back to Dashboard
+      window.location.href = "dashboard.html";
+    });
+  </script>
+
+</body>
+</html>

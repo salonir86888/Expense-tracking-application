@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUREUM | My Budgets</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: #fcfbf8; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .top-header { height: 75px; background: #ffffff; border-bottom: 1px solid #f0ece1; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; }
+    .brand-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-emblem { width: 42px; height: 42px; background: linear-gradient(135deg, #e5d3b3, #c5a059); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 700; color: #ffffff; font-size: 1.4rem; }
+    .logo-text { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700; color: #c5a059; letter-spacing: 2px; }
+    
+    .user-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 6px 12px; border-radius: 25px; transition: background 0.2s ease; }
+    .user-profile:hover { background: #faf8f3; }
+    .avatar-circle { width: 38px; height: 38px; background-color: #d4af37; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+    .user-name { font-weight: 600; font-size: 0.95rem; color: #1a1a1a; }
+
+    .btn-logout { background: #faf8f3; border: 1px solid #ebdcb9; color: #c5a059; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-left: 10px; transition: all 0.2s ease; }
+    .btn-logout:hover { background: #f3eee3; border-color: #c5a059; color: #b38f48; }
+
+    .main-container { max-width: 1200px; margin: 50px auto; padding: 0 20px; flex: 1; width: 100%; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+    .page-title { font-family: 'Cinzel', serif; font-size: 2.8rem; font-weight: 700; color: #111; }
+    .page-subtitle { font-size: 0.85rem; color: #71717a; margin-top: 6px; letter-spacing: 0.5px; }
+    
+    .header-actions { display: flex; gap: 12px; }
+    .btn-dash { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 20px; color: #111; text-decoration: none; font-size: 0.8rem; font-weight: 600; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+
+    .budgets-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+    
+    .create-card { border: 2px dashed #cbd5e1; border-radius: 16px; min-height: 220px; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; background: transparent; transition: all 0.2s; }
+    .create-card:hover { border-color: #c5a059; background: #faf8f3; }
+    .plus-icon { width: 44px; height: 44px; border-radius: 50%; background: #f1f5f9; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #64748b; margin-bottom: 12px; }
+    .create-text { font-size: 1.05rem; font-weight: 600; color: #334155; }
+
+    .budget-card { background: #ffffff; border: 1px solid #f0ece1; border-radius: 16px; padding: 30px; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
+    .budget-card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .b-icon-title { display: flex; align-items: center; gap: 14px; }
+    .b-icon { width: 42px; height: 42px; background: #faf8f3; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #78350f; font-size: 1.1rem; }
+    .b-name { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; color: #111; }
+    .b-sub { font-size: 0.75rem; color: #71717a; margin-top: 2px; }
+    .b-amount { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 600; color: #c5a059; }
+
+    .delete-btn { position: absolute; right: 20px; bottom: 20px; color: #94a3b8; cursor: pointer; font-size: 0.9rem; }
+    .delete-btn:hover { color: #ef4444; }
+
+    .progress-section { margin-top: 30px; }
+    .progress-labels { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; color: #334155; margin-bottom: 10px; }
+    .p-bar { height: 6px; background: #f1f5f9; border-radius: 10px; overflow: hidden; }
+    .p-fill { height: 100%; background: #c5a059; border-radius: 10px; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-box { background: white; width: 420px; border-radius: 16px; padding: 30px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .modal-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #111; margin-bottom: 20px; }
+    .close-btn { position: absolute; right: 20px; top: 20px; cursor: pointer; color: #94a3b8; font-size: 1.2rem; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .form-group input { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.85rem; outline: none; }
+    .form-group input:focus { border-color: #c5a059; }
+
+    .btn-submit { width: 100%; background: #c5a059; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; cursor: pointer; margin-top: 10px; }
+    .btn-submit:hover { background: #b38f48; }
+
+    .profile-card-modal { background: #ffffff; width: 420px; border-radius: 20px; border: 1px solid #f0ece1; padding: 35px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; }
+    .profile-avatar-large { width: 70px; height: 70px; background: linear-gradient(135deg, #e5d3b3, #c5a059); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-family: 'Cinzel', serif; font-weight: 700; margin: 0 auto 15px auto; border: 3px solid #ebdcb9; }
+    .profile-modal-name { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700; color: #111; }
+    .profile-modal-badge { display: inline-block; background: #faf8f3; border: 1px solid #ebdcb9; color: #c5a059; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; padding: 4px 12px; border-radius: 12px; margin-top: 6px; }
+    .profile-info-list { margin-top: 25px; text-align: left; background: #faf9f5; border-radius: 12px; padding: 15px 20px; border: 1px solid #f0ece1; }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-label { color: #a1a1aa; font-size: 0.75rem; font-weight: 600; }
+    .info-val { color: #1a1a1a; font-weight: 600; }
+    .close-profile-btn { position: absolute; top: 20px; right: 20px; color: #a1a1aa; cursor: pointer; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-emblem">A</div>
+      <span class="logo-text">AUREUM</span>
+    </a>
+
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="user-profile" id="userProfileTrigger" onclick="openProfileModal()">
+        <div class="avatar-circle">A</div>
+        <span class="user-name">User</span>
+        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: #c5a059;"></i>
+      </div>
+
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+      </button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">My Budgets</h1>
+        <p class="page-subtitle">Precision management of your sovereign assets.</p>
+      </div>
+      <div class="header-actions">
+        <a href="dashboard.html" class="btn-dash"><i class="fa-solid fa-border-all"></i> DASHBOARD</a>
+      </div>
+    </div>
+
+    <div class="budgets-grid" id="budgetsGrid">
+      <div class="create-card" id="openBudgetModal" onclick="openModal()">
+        <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
+        <div class="create-text">Create New Budget</div>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="budgetModal">
+    <div class="modal-box">
+      <i class="fa-solid fa-xmark close-btn" id="closeBudgetModal"></i>
+      <h2 class="modal-title">Create New Budget</h2>
+      <form id="budgetForm">
+        <div class="form-group">
+          <label>BUDGET NAME</label>
+          <input type="text" id="budgetName" placeholder="e.g. Travel & Leisure" required>
+        </div>
+        <div class="form-group">
+          <label>TOTAL BUDGET AMOUNT ($)</label>
+          <input type="number" id="budgetAmount" placeholder="e.g. 50000" required>
+        </div>
+        <button type="submit" class="btn-submit">SAVE BUDGET</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="profileModal">
+    <div class="profile-card-modal">
+      <i class="fa-solid fa-xmark close-profile-btn" onclick="closeProfileModal()"></i>
+      <div class="profile-avatar-large" id="modalAvatar">E</div>
+      <h2 class="profile-modal-name" id="modalName">Elina</h2>
+      <span class="profile-modal-badge"><i class="fa-solid fa-crown"></i> SOVEREIGN ASSET HOLDER</span>
+
+      <div class="profile-info-list">
+        <div class="info-row">
+          <span class="info-label">PRIMARY EMAIL</span>
+          <span class="info-val" id="modalEmail">elina@gmail.com</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">ACCOUNT STATUS</span>
+          <span class="info-val" style="color: #22c55e;"><i class="fa-solid fa-circle-check"></i> VERIFIED VAULT</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">ENCRYPTION</span>
+          <span class="info-val">256-BIT SHA</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">CAPACITY LIMIT</span>
+          <span class="info-val" style="color: #c5a059;">$5,000.00</span>
+        </div>
+      </div>
+
+      <button class="btn-logout" onclick="handleLogout()" style="width: 100%; margin: 20px 0 0 0; justify-content: center; padding: 10px;">
+        <i class="fa-solid fa-right-from-bracket"></i> LOG OUT FROM SESSION
+      </button>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    let allBudgets = [];
+    let userExpenses = [];
+
+    function getAuthData() {
+      const token = localStorage.getItem('token');
+      let user = {};
+      try {
+        user = JSON.parse(localStorage.getItem('user')) || {};
+      } catch(e) { console.error("Parse Error:", e); }
+      return { token, user };
+    }
+
+    const { token, user } = getAuthData();
+
+    if (!token) {
+      alert("Session expired. Please sign in again.");
+      window.location.href = "authentication.html";
+    }
+
+    function initUserInfo() {
+      if (user) {
+        const displayName = user.name || "User";
+        const displayEmail = user.email || "vault.user@aureum.com";
+        const firstLetter = displayName.charAt(0).toUpperCase();
+
+        const userNameEl = document.querySelector('.user-name');
+        const avatarCircle = document.querySelector('.avatar-circle');
+
+        if (userNameEl) userNameEl.innerText = displayName;
+        if (avatarCircle) avatarCircle.innerText = firstLetter;
+
+        const modalName = document.getElementById('modalName');
+        const modalEmail = document.getElementById('modalEmail');
+        const modalAvatar = document.getElementById('modalAvatar');
+
+        if (modalName) modalName.innerText = displayName;
+        if (modalEmail) modalEmail.innerText = displayEmail;
+        if (modalAvatar) modalAvatar.innerText = firstLetter;
+      }
+    }
+
+    const profileModal = document.getElementById('profileModal');
+    function openProfileModal() { profileModal.style.display = 'flex'; }
+    function closeProfileModal() { profileModal.style.display = 'none'; }
+
+    async function fetchBudgets() {
+      initUserInfo();
+      const userId = user._id || user.id;
+
+      if (!userId) {
+        renderBudgets();
+        return;
+      }
+
+      try {
+        // 1. Fetch Expenses to calculate spend dynamically
+        const expResponse = await fetch(`${API_BASE_URL}/api/expense/user/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (expResponse.ok) {
+          userExpenses = await expResponse.json();
+        }
+
+        // 2. Fetch Budgets
+        const response = await fetch(`${API_BASE_URL}/api/budget/user/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          allBudgets = await response.json();
+          renderBudgets();
+        } else {
+          renderBudgets();
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        renderBudgets();
+      }
+    }
+
+    function renderBudgets() {
+      const grid = document.getElementById('budgetsGrid');
+      
+      grid.innerHTML = `
+        <div class="create-card" id="openBudgetModal" onclick="openModal()">
+          <div class="plus-icon"><i class="fa-solid fa-plus"></i></div>
+          <div class="create-text">Create New Budget</div>
+        </div>
+      `;
+
+      if (Array.isArray(allBudgets)) {
+        allBudgets.forEach(b => {
+          const budgetName = (b.name || b.title || "").trim().toLowerCase();
+
+          // DYNAMIC LOGIC: Calculate spend for this specific budget name
+          const spendVal = userExpenses
+            .filter(exp => (exp.category || "").trim().toLowerCase() === budgetName)
+            .reduce((sum, exp) => sum + (Number(exp.amount) || 0), 0);
+
+          const totalAmount = Number(b.amount || 0);
+          const left = Math.max(0, totalAmount - spendVal);
+          const percent = Math.min(100, Math.round((spendVal / (totalAmount || 1)) * 100));
+
+          const card = document.createElement('div');
+          card.className = 'budget-card';
+          card.innerHTML = `
+            <div class="budget-card-top">
+              <div class="b-icon-title">
+                <div class="b-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <div>
+                  <div class="b-name">${b.name || b.title}</div>
+                  <div class="b-sub">Active Target Limit</div>
+                </div>
+              </div>
+              <div class="b-amount">$${totalAmount.toLocaleString()}</div>
+            </div>
+
+            <div class="progress-section">
+              <div class="progress-labels">
+                <span>$${spendVal.toLocaleString()} SPEND</span>
+                <span>$${left.toLocaleString()} LEFT</span>
+              </div>
+              <div class="p-bar"><div class="p-fill" style="width: ${percent}%;"></div></div>
+            </div>
+            <i class="fa-regular fa-trash-can delete-btn" onclick="deleteBudget('${b._id}')"></i>
+          `;
+          grid.appendChild(card);
+        });
+      }
+    }
+
+    const budgetModal = document.getElementById('budgetModal');
+    function openModal() { budgetModal.style.display = 'flex'; }
+    document.getElementById('closeBudgetModal').onclick = () => budgetModal.style.display = 'none';
+
+    window.onclick = (e) => { 
+      if (e.target === budgetModal) budgetModal.style.display = 'none';
+      if (e.target === profileModal) profileModal.style.display = 'none';
+    };
+
+    document.getElementById('budgetForm').onsubmit = async function(e) {
+      e.preventDefault();
+      
+      const userId = user._id || user.id;
+      const submitBtn = this.querySelector('.btn-submit');
+      submitBtn.innerText = "SAVING BUDGET...";
+      submitBtn.disabled = true;
+
+      const name = document.getElementById('budgetName').value;
+      const amount = parseFloat(document.getElementById('budgetAmount').value);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/budget/add`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userId: userId,
+            name,
+            amount
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert('Budget Created Successfully!');
+          this.reset();
+          budgetModal.style.display = 'none';
+          fetchBudgets();
+        } else {
+          alert(data.message || 'Failed to save budget');
+        }
+      } catch (error) {
+        console.error('Error saving budget:', error);
+        alert('Server connection failed.');
+      } finally {
+        submitBtn.innerText = "SAVE BUDGET";
+        submitBtn.disabled = false;
+      }
+    };
+
+    async function deleteBudget(id) {
+      if (confirm("Are you sure you want to delete this budget?")) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/budget/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          const data = await response.json();
+          alert(data.message || 'Budget Deleted!');
+          fetchBudgets();
+        } catch (error) {
+          console.error("Delete Error:", error);
+        }
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Are you sure you want to log out of Aureum Vault?")) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = "authentication.html";
+      }
+    }
+
+    fetchBudgets();
+  </script>
+</body>
+</html>

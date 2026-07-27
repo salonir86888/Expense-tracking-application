@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AUREUM | Private Expense Outflow</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background-color: #fcfbf8; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
+    
+    .top-header { height: 75px; background: #ffffff; border-bottom: 1px solid #f0ece1; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; }
+    .brand-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .logo-emblem { width: 42px; height: 42px; background: linear-gradient(135deg, #e5d3b3, #c5a059); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 700; color: #ffffff; font-size: 1.4rem; }
+    .logo-text { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700; color: #c5a059; letter-spacing: 2px; }
+
+    .user-profile { display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 6px 12px; border-radius: 25px; transition: background 0.2s ease; }
+    .user-profile:hover { background: #faf8f3; }
+    .avatar-circle { width: 38px; height: 38px; background-color: #d4af37; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; }
+    .user-name { font-weight: 600; font-size: 0.95rem; color: #1a1a1a; }
+
+    .btn-logout { background: #faf8f3; border: 1px solid #ebdcb9; color: #c5a059; padding: 6px 14px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 6px; margin-left: 10px; transition: all 0.2s ease; }
+    .btn-logout:hover { background: #f3eee3; border-color: #c5a059; color: #b38f48; }
+
+    .main-container { max-width: 1200px; margin: 50px auto; padding: 0 20px; flex: 1; width: 100%; }
+    .page-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px; }
+    .page-title { font-family: 'Cinzel', serif; font-size: 2.8rem; font-weight: 700; color: #111; }
+    .page-subtitle { font-size: 0.85rem; color: #71717a; margin-top: 4px; }
+    
+    .btn-add { background: #c5a059; color: white; border: none; padding: 12px 24px; font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; border-radius: 4px; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.2s; }
+    .btn-add:hover { background: #b38f48; }
+
+    .filter-bar { display: flex; justify-content: space-between; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+    .search-box { position: relative; width: 300px; }
+    .search-box input { width: 100%; padding: 10px 15px 10px 35px; border: 1px solid #e2e8f0; border-radius: 6px; background: #fff; font-size: 0.85rem; outline: none; }
+    .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #a1a1aa; font-size: 0.8rem; }
+    
+    .filter-actions { display: flex; gap: 10px; align-items: center; }
+    .btn-filter { background: #fff; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; gap: 6px; outline: none; }
+    .select-filter { background: #fff; border: 1px solid #e2e8f0; padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; color: #334155; cursor: pointer; outline: none; }
+
+    .table-card { background: #ffffff; border: 1px solid #f0ece1; border-radius: 12px; padding: 20px 30px; }
+    .data-table { width: 100%; border-collapse: collapse; }
+    .data-table th { text-align: left; font-size: 0.7rem; color: #a1a1aa; padding: 15px 0; border-bottom: 1px solid #f0ece1; letter-spacing: 1px; }
+    .data-table td { padding: 20px 0; font-size: 0.9rem; border-bottom: 1px solid #f8f6f0; }
+    .cat-badge { background: #f8fafc; border: 1px solid #e2e8f0; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; color: #64748b; font-weight: 600; text-transform: uppercase; }
+
+    .action-icons { display: flex; justify-content: flex-end; gap: 14px; align-items: center; }
+    .action-icon { cursor: pointer; color: #94a3b8; font-size: 0.9rem; transition: color 0.2s; }
+    .action-icon.edit:hover { color: #c5a059; }
+    .action-icon.delete:hover { color: #ef4444; }
+
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 1000; }
+    .modal-box { background: white; width: 450px; border-radius: 16px; padding: 30px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+    .modal-title { font-family: 'Cinzel', serif; font-size: 1.4rem; font-weight: 700; color: #111; margin-bottom: 20px; }
+    .close-btn { position: absolute; right: 20px; top: 20px; cursor: pointer; color: #94a3b8; font-size: 1.2rem; }
+
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .form-group input, .form-group select { width: 100%; padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 0.85rem; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: #c5a059; }
+
+    .btn-submit { width: 100%; background: #c5a059; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; cursor: pointer; margin-top: 10px; }
+    .btn-submit:hover { background: #b38f48; }
+
+    .profile-card-modal { background: #ffffff; width: 420px; border-radius: 20px; border: 1px solid #f0ece1; padding: 35px; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; }
+    .profile-avatar-large { width: 70px; height: 70px; background: linear-gradient(135deg, #e5d3b3, #c5a059); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-family: 'Cinzel', serif; font-weight: 700; margin: 0 auto 15px auto; border: 3px solid #ebdcb9; }
+    .profile-modal-name { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700; color: #111; }
+    .profile-modal-badge { display: inline-block; background: #faf8f3; border: 1px solid #ebdcb9; color: #c5a059; font-size: 0.65rem; font-weight: 700; letter-spacing: 1px; padding: 4px 12px; border-radius: 12px; margin-top: 6px; }
+    .profile-info-list { margin-top: 25px; text-align: left; background: #faf9f5; border-radius: 12px; padding: 15px 20px; border: 1px solid #f0ece1; }
+    .info-row { display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 0.85rem; }
+    .info-row:last-child { margin-bottom: 0; }
+    .info-label { color: #a1a1aa; font-size: 0.75rem; font-weight: 600; }
+    .info-val { color: #1a1a1a; font-weight: 600; }
+    .close-profile-btn { position: absolute; top: 20px; right: 20px; color: #a1a1aa; cursor: pointer; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+
+  <header class="top-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-emblem">A</div>
+      <span class="logo-text">AUREUM</span>
+    </a>
+    
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="user-profile" id="userProfileTrigger" onclick="openProfileModal()">
+        <div class="avatar-circle">A</div>
+        <span class="user-name">User</span>
+        <i class="fa-solid fa-chevron-down" style="font-size: 0.7rem; color: #c5a059;"></i>
+      </div>
+
+      <button class="btn-logout" onclick="handleLogout()">
+        <i class="fa-solid fa-right-from-bracket"></i> LOGOUT
+      </button>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="page-header">
+      <div>
+        <h1 class="page-title">My Expenses</h1>
+        <p class="page-subtitle">Expense Outflow</p>
+      </div>
+      <button class="btn-add" id="openModalBtn" onclick="openAddExpenseModal()"><i class="fa-solid fa-plus"></i> ADD NEW EXPENSE</button>
+    </div>
+
+    <div class="filter-bar">
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="searchInput" placeholder="Search transactions...">
+      </div>
+      <div class="filter-actions">
+        <button class="btn-filter" onclick="openDateModal()"><i class="fa-regular fa-calendar"></i> <span id="dateFilterLabel">DATE RANGE</span></button>
+        
+        <select class="select-filter" id="categoryFilter" onchange="applyFilters()">
+          <option value="ALL">ALL BUDGETS / CATEGORIES</option>
+        </select>
+
+        <button class="btn-filter" id="resetFilterBtn" onclick="resetAllFilters()" style="display:none; color:#ef4444; border-color:#fca5a5;">RESET</button>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>NAME</th>
+            <th>BUDGET CATEGORY</th>
+            <th>DATE</th>
+            <th>AMOUNT</th>
+            <th style="text-align: right;">ACTION</th>
+          </tr>
+        </thead>
+        <tbody id="expenseTableBody"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="modal-overlay" id="expenseModal">
+    <div class="modal-box">
+      <i class="fa-solid fa-xmark close-btn" id="closeModalBtn"></i>
+      <h2 class="modal-title" id="modalFormTitle">Add New Expense</h2>
+      <form id="expenseForm">
+        <input type="hidden" id="editExpenseId" value="">
+        <div class="form-group">
+          <label>NAME DESCRIPTOR</label>
+          <input type="text" id="expName" placeholder="e.g. Gym Membership / Bike Service" required>
+        </div>
+        <div class="form-group">
+          <label>SELECT CREATED BUDGET</label>
+          <select id="expCategory" required></select>
+        </div>
+        <div class="form-group">
+          <label>DATE</label>
+          <input type="date" id="expDate" required>
+        </div>
+        <div class="form-group">
+          <label>AMOUNT ($)</label>
+          <input type="number" id="expAmount" placeholder="e.g. 2000" required>
+        </div>
+        <button type="submit" class="btn-submit" id="submitFormBtn">SAVE EXPENSE</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="dateFilterModal">
+    <div class="modal-box" style="width: 380px;">
+      <i class="fa-solid fa-xmark close-btn" onclick="closeDateModal()"></i>
+      <h2 class="modal-title" style="font-size: 1.2rem;">Filter By Date Range</h2>
+      <div class="form-group">
+        <label>START DATE</label>
+        <input type="date" id="startDateInput">
+      </div>
+      <div class="form-group">
+        <label>END DATE</label>
+        <input type="date" id="endDateInput">
+      </div>
+      <button class="btn-submit" onclick="applyDateRangeFilter()">APPLY DATE FILTER</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="profileModal">
+    <div class="profile-card-modal">
+      <i class="fa-solid fa-xmark close-profile-btn" onclick="closeProfileModal()"></i>
+      <div class="profile-avatar-large" id="modalAvatar">E</div>
+      <h2 class="profile-modal-name" id="modalName">Elina</h2>
+      <span class="profile-modal-badge"><i class="fa-solid fa-crown"></i> SOVEREIGN ASSET HOLDER</span>
+
+      <div class="profile-info-list">
+        <div class="info-row">
+          <span class="info-label">PRIMARY EMAIL</span>
+          <span class="info-val" id="modalEmail">elina@gmail.com</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">ACCOUNT STATUS</span>
+          <span class="info-val" style="color: #22c55e;"><i class="fa-solid fa-circle-check"></i> VERIFIED VAULT</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">ENCRYPTION</span>
+          <span class="info-val">256-BIT SHA</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">CAPACITY LIMIT</span>
+          <span class="info-val" style="color: #c5a059;">$5,000.00</span>
+        </div>
+      </div>
+
+      <button class="btn-logout" onclick="handleLogout()" style="width: 100%; margin: 20px 0 0 0; justify-content: center; padding: 10px;">
+        <i class="fa-solid fa-right-from-bracket"></i> LOG OUT FROM SESSION
+      </button>
+    </div>
+  </div>
+
+  <script src="config.js"></script>
+  <script>
+    let allExpenses = [];
+    let userBudgets = [];
+    let selectedStartDate = null;
+    let selectedEndDate = null;
+
+    function getAuthData() {
+      const token = localStorage.getItem('token');
+      let user = {};
+      try {
+        user = JSON.parse(localStorage.getItem('user')) || {};
+      } catch(e) { console.error("Parse Error:", e); }
+      return { token, user };
+    }
+
+    const { token, user } = getAuthData();
+
+    if (!token) {
+      alert("Session expired. Please sign in again.");
+      window.location.href = "authentication.html";
+    }
+
+    function initUserInfo() {
+      if (user) {
+        const displayName = user.name || "User";
+        const displayEmail = user.email || "vault.user@aureum.com";
+        const firstLetter = displayName.charAt(0).toUpperCase();
+
+        const userNameEl = document.querySelector('.user-name');
+        const avatarCircle = document.querySelector('.avatar-circle');
+
+        if (userNameEl) userNameEl.innerText = displayName;
+        if (avatarCircle) avatarCircle.innerText = firstLetter;
+
+        const modalName = document.getElementById('modalName');
+        const modalEmail = document.getElementById('modalEmail');
+        const modalAvatar = document.getElementById('modalAvatar');
+
+        if (modalName) modalName.innerText = displayName;
+        if (modalEmail) modalEmail.innerText = displayEmail;
+        if (modalAvatar) modalAvatar.innerText = firstLetter;
+      }
+    }
+
+    const profileModal = document.getElementById('profileModal');
+    function openProfileModal() { profileModal.style.display = 'flex'; }
+    function closeProfileModal() { profileModal.style.display = 'none'; }
+
+    const dateFilterModal = document.getElementById('dateFilterModal');
+    function openDateModal() { dateFilterModal.style.display = 'flex'; }
+    function closeDateModal() { dateFilterModal.style.display = 'none'; }
+
+    // FETCH USER'S CREATED BUDGETS FOR DROPDOWN
+    async function fetchUserBudgets() {
+      const userId = user._id || user.id;
+      if (!userId) return;
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/budget/user/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          userBudgets = await response.json();
+          populateBudgetDropdowns();
+        }
+      } catch (error) {
+        console.error("Error fetching budgets:", error);
+      }
+    }
+
+    function populateBudgetDropdowns() {
+      const modalSelect = document.getElementById('expCategory');
+      const filterSelect = document.getElementById('categoryFilter');
+
+      modalSelect.innerHTML = '';
+      filterSelect.innerHTML = '<option value="ALL">ALL BUDGETS / CATEGORIES</option>';
+
+      if (userBudgets.length === 0) {
+        modalSelect.innerHTML = '<option value="GENERAL">GENERAL (No Budget Created)</option>';
+        const opt = document.createElement('option');
+        opt.value = "GENERAL";
+        opt.textContent = "GENERAL";
+        filterSelect.appendChild(opt);
+        return;
+      }
+
+      userBudgets.forEach(b => {
+        const bName = b.name || b.title;
+        
+        // Populate Modal Dropdown
+        const optionModal = document.createElement('option');
+        optionModal.value = bName;
+        optionModal.textContent = bName.toUpperCase();
+        modalSelect.appendChild(optionModal);
+
+        // Populate Filter Dropdown
+        const optionFilter = document.createElement('option');
+        optionFilter.value = bName.toUpperCase();
+        optionFilter.textContent = bName.toUpperCase();
+        filterSelect.appendChild(optionFilter);
+      });
+    }
+
+    async function fetchExpenses() {
+      initUserInfo();
+      await fetchUserBudgets();
+      const userId = user._id || user.id;
+      
+      if (!userId) {
+        renderTable();
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/expense/user/${userId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (response.ok) {
+          allExpenses = await response.json();
+          applyFilters();
+        } else {
+          renderTable();
+        }
+      } catch (error) {
+        console.error("Error connecting to server:", error);
+        renderTable();
+      }
+    }
+
+    function applyFilters() {
+      const searchText = document.getElementById('searchInput').value.toLowerCase();
+      const selectedCategory = document.getElementById('categoryFilter').value.toUpperCase();
+
+      const filtered = Array.isArray(allExpenses) ? allExpenses.filter(exp => {
+        const titleName = (exp.title || exp.name || "").toLowerCase();
+        const catName = (exp.category || "GENERAL").toUpperCase();
+        const expDate = exp.date ? new Date(exp.date) : null;
+
+        const matchesSearch = titleName.includes(searchText) || catName.toLowerCase().includes(searchText);
+        const matchesCategory = (selectedCategory === "ALL") || (catName === selectedCategory);
+
+        let matchesDate = true;
+        if (selectedStartDate && expDate) matchesDate = matchesDate && (expDate >= new Date(selectedStartDate));
+        if (selectedEndDate && expDate) {
+          const end = new Date(selectedEndDate);
+          end.setHours(23, 59, 59, 999);
+          matchesDate = matchesDate && (expDate <= end);
+        }
+
+        return matchesSearch && matchesCategory && matchesDate;
+      }) : [];
+
+      const isFiltered = searchText || selectedCategory !== "ALL" || selectedStartDate || selectedEndDate;
+      document.getElementById('resetFilterBtn').style.display = isFiltered ? "inline-block" : "none";
+
+      renderTable(filtered);
+    }
+
+    function renderTable(data = allExpenses) {
+      const tbody = document.getElementById('expenseTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#a1a1aa; padding: 30px;">No expenses matched your criteria.</td></tr>`;
+        return;
+      }
+
+      const sortedData = [...data].reverse();
+
+      sortedData.forEach(item => {
+        const formattedDate = item.date ? new Date(item.date).toLocaleDateString('en-GB') : 'N/A';
+        const formattedAmount = '$' + Number(item.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
+        const displayName = item.title || item.name || 'Expense';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight: 600;">${displayName}</td>
+          <td><span class="cat-badge">${item.category || 'GENERAL'}</span></td>
+          <td style="color: #64748b;">${formattedDate}</td>
+          <td style="color: #c5a059; font-weight: 700;">${formattedAmount}</td>
+          <td style="text-align: right;">
+            <div class="action-icons">
+              <i class="fa-regular fa-pen-to-square action-icon edit" onclick="editExpense('${item._id}')" title="Edit Expense"></i>
+              <i class="fa-regular fa-trash-can action-icon delete" onclick="deleteExpense('${item._id}')" title="Delete Expense"></i>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function openAddExpenseModal() {
+      document.getElementById('editExpenseId').value = "";
+      document.getElementById('modalFormTitle').innerText = "Add New Expense";
+      document.getElementById('submitFormBtn').innerText = "SAVE EXPENSE";
+      document.getElementById('expenseForm').reset();
+      document.getElementById('expDate').valueAsDate = new Date();
+      modal.style.display = 'flex';
+    }
+
+    function editExpense(id) {
+      const exp = allExpenses.find(item => item._id === id);
+      if (!exp) return;
+
+      document.getElementById('editExpenseId').value = exp._id;
+      document.getElementById('expName').value = exp.title || exp.name || "";
+      document.getElementById('expCategory').value = exp.category || "";
+      
+      if (exp.date) {
+        const d = new Date(exp.date);
+        document.getElementById('expDate').value = d.toISOString().split('T')[0];
+      }
+
+      document.getElementById('expAmount').value = exp.amount || "";
+
+      document.getElementById('modalFormTitle').innerText = "Edit Expense";
+      document.getElementById('submitFormBtn').innerText = "UPDATE EXPENSE";
+      modal.style.display = 'flex';
+    }
+
+    function applyDateRangeFilter() {
+      selectedStartDate = document.getElementById('startDateInput').value;
+      selectedEndDate = document.getElementById('endDateInput').value;
+      if (selectedStartDate || selectedEndDate) document.getElementById('dateFilterLabel').innerText = "FILTER ACTIVE";
+      closeDateModal();
+      applyFilters();
+    }
+
+    function resetAllFilters() {
+      document.getElementById('searchInput').value = "";
+      document.getElementById('categoryFilter').value = "ALL";
+      document.getElementById('startDateInput').value = "";
+      document.getElementById('endDateInput').value = "";
+      selectedStartDate = null;
+      selectedEndDate = null;
+      document.getElementById('dateFilterLabel').innerText = "DATE RANGE";
+      applyFilters();
+    }
+
+    const modal = document.getElementById('expenseModal');
+    const closeBtn = document.getElementById('closeModalBtn');
+    if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
+
+    window.onclick = (e) => { 
+      if (e.target === modal) modal.style.display = 'none';
+      if (e.target === profileModal) profileModal.style.display = 'none';
+      if (e.target === dateFilterModal) dateFilterModal.style.display = 'none';
+    };
+
+    document.getElementById('expenseForm').onsubmit = async function(e) {
+      e.preventDefault();
+      
+      const userId = user._id || user.id;
+      const editId = document.getElementById('editExpenseId').value;
+      const submitBtn = document.getElementById('submitFormBtn');
+      
+      submitBtn.innerText = editId ? "UPDATING..." : "SAVING TO VAULT...";
+      submitBtn.disabled = true;
+
+      const title = document.getElementById('expName').value;
+      const category = document.getElementById('expCategory').value;
+      const date = document.getElementById('expDate').value;
+      const amount = parseFloat(document.getElementById('expAmount').value);
+
+      const isEdit = !!editId;
+      const url = isEdit 
+        ? `${API_BASE_URL}/api/expense/${editId}` 
+        : `${API_BASE_URL}/api/expense/add`;
+
+      const method = isEdit ? 'PUT' : 'POST';
+
+      try {
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({
+            userId: userId,
+            title,
+            category,
+            date,
+            amount
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert(isEdit ? 'Expense Updated Successfully!' : 'Expense Saved Successfully!');
+          this.reset();
+          modal.style.display = 'none';
+          fetchExpenses();
+        } else {
+          alert(data.message || 'Failed to save expense');
+        }
+      } catch (error) {
+        console.error('Error saving expense:', error);
+        alert('Server connection failed.');
+      } finally {
+        submitBtn.innerText = isEdit ? "UPDATE EXPENSE" : "SAVE EXPENSE";
+        submitBtn.disabled = false;
+      }
+    };
+
+    async function deleteExpense(id) {
+      if (confirm("Are you sure you want to delete this expense permanently?")) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/expense/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+          });
+
+          const data = await response.json();
+          alert(data.message || 'Expense Deleted!');
+          fetchExpenses();
+        } catch (error) {
+          console.error("Delete Error:", error);
+        }
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Are you sure you want to log out?")) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = "authentication.html";
+      }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    fetchExpenses();
+  </script>
+</body>
+</html>
