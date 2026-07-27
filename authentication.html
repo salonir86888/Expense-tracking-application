@@ -3,101 +3,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AUREUM | Sovereign Authentication</title>
-  
+  <title>AUREUM | Authentication Terminal</title>
+
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Inter', sans-serif; background-color: #0d0d0d; color: #1a1a1a; min-height: 100vh; display: flex; flex-direction: column; }
-    
-    .top-header { height: 75px; background: #ffffff; border-bottom: 1px solid #f0ece1; display: flex; justify-content: space-between; align-items: center; padding: 0 50px; }
-    .brand-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-    .logo-emblem { width: 42px; height: 42px; background: linear-gradient(135deg, #e5d3b3, #c5a059); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Cinzel', serif; font-weight: 700; color: #ffffff; font-size: 1.4rem; }
-    .logo-text { font-family: 'Cinzel', serif; font-size: 1.5rem; font-weight: 700; color: #c5a059; letter-spacing: 2px; }
+    body { font-family: 'Inter', sans-serif; background-color: #fcfbf8; color: #1a1a1a; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; }
 
-    .auth-container { flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px; background: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%); }
-    .auth-card { background: #ffffff; width: 100%; max-width: 450px; border-radius: 16px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #c5a05933; }
-    
-    .auth-header { text-align: center; margin-bottom: 30px; }
-    .auth-title { font-family: 'Cinzel', serif; font-size: 1.8rem; font-weight: 700; color: #111; margin-bottom: 8px; }
-    .auth-subtitle { font-size: 0.85rem; color: #71717a; }
+    .auth-container { width: 900px; max-width: 95%; height: 550px; background: #ffffff; border: 1px solid #f0ece1; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.05); position: relative; overflow: hidden; display: flex; }
 
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; font-size: 0.75rem; font-weight: 600; color: #64748b; margin-bottom: 6px; letter-spacing: 0.5px; }
-    .form-group input { width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 0.9rem; outline: none; transition: border 0.2s; }
-    .form-group input:focus { border-color: #c5a059; }
+    .form-container { width: 50%; height: 100%; padding: 50px 40px; display: flex; flex-direction: column; justify-content: space-between; position: absolute; top: 0; transition: all 0.6s ease-in-out; }
+    .sign-in-container { left: 0; z-index: 2; }
+    .sign-up-container { left: 0; opacity: 0; z-index: 1; }
 
-    .btn-submit { width: 100%; background: linear-gradient(135deg, #e5d3b3, #c5a059); color: white; border: none; padding: 14px; border-radius: 8px; font-weight: 700; font-size: 0.85rem; letter-spacing: 1px; cursor: pointer; transition: opacity 0.2s; margin-top: 10px; }
-    .btn-submit:hover { opacity: 0.95; }
+    .auth-container.right-panel-active .sign-in-container { transform: translateX(100%); opacity: 0; z-index: 1; }
+    .auth-container.right-panel-active .sign-up-container { transform: translateX(100%); opacity: 1; z-index: 5; }
 
-    .auth-toggle { text-align: center; margin-top: 25px; font-size: 0.85rem; color: #71717a; }
-    .auth-toggle span { color: #c5a059; font-weight: 600; cursor: pointer; text-decoration: underline; margin-left: 5px; }
+    .brand-header { display: flex; align-items: center; gap: 10px; }
+    .brand-logo { font-family: 'Cinzel', serif; font-size: 1.3rem; font-weight: 700; color: #c5a059; letter-spacing: 2px; text-decoration: none; display: flex; align-items: center; gap: 8px; }
+
+    .form-title { font-family: 'Cinzel', serif; font-size: 2rem; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .form-sub { font-size: 0.8rem; color: #71717a; margin-bottom: 25px; }
+
+    .form-group { margin-bottom: 16px; text-align: left; }
+    .form-group label { display: block; font-size: 0.7rem; font-weight: 600; color: #64748b; margin-bottom: 6px; letter-spacing: 0.5px; }
+    .form-group input { width: 100%; padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; font-size: 0.85rem; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus { border-color: #c5a059; background: #ffffff; }
+
+    .btn-submit { width: 100%; background: #c5a059; color: white; border: none; padding: 12px; border-radius: 6px; font-weight: 700; font-size: 0.8rem; letter-spacing: 1px; cursor: pointer; margin-top: 10px; transition: background 0.2s; }
+    .btn-submit:hover { background: #b38f48; }
+
+    .toggle-link { text-align: center; font-size: 0.8rem; color: #71717a; margin-top: 15px; }
+    .toggle-link span { color: #c5a059; font-weight: 600; cursor: pointer; text-decoration: underline; margin-left: 4px; }
+
+    /* OVERLAY / BANNER CONTAINER */
+    .overlay-container { position: absolute; top: 0; left: 50%; width: 50%; height: 100%; overflow: hidden; transition: transform 0.6s ease-in-out; z-index: 100; }
+    .auth-container.right-panel-active .overlay-container { transform: translateX(-100%); }
+
+    .overlay { background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1200&q=80'); background-size: cover; background-position: center; color: #ffffff; position: relative; left: -100%; height: 100%; width: 200%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
+    .auth-container.right-panel-active .overlay { transform: translateX(50%); }
+
+    .overlay-panel { position: absolute; display: flex; align-items: flex-start; justify-content: flex-end; flex-direction: column; padding: 50px 40px; text-align: left; top: 0; height: 100%; width: 50%; transform: translateX(0); transition: transform 0.6s ease-in-out; }
+    .overlay-right { right: 0; transform: translateX(0); }
+    .overlay-left { transform: translateX(-20%); }
+    .auth-container.right-panel-active .overlay-left { transform: translateX(0); }
+    .auth-container.right-panel-active .overlay-right { transform: translateX(20%); }
+
+    .overlay-title { font-family: 'Cinzel', serif; font-size: 2.2rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; }
+    .overlay-desc { font-size: 0.8rem; color: #e2e8f0; line-height: 1.5; }
+
+    .form-footer { font-size: 0.7rem; color: #a1a1aa; display: flex; justify-content: space-between; align-items: center; }
   </style>
 </head>
 <body>
 
-  <!-- TOP HEADER -->
-  <header class="top-header">
-    <a href="#" class="brand-logo">
-      <div class="logo-emblem">A</div>
-      <span class="logo-text">AUREUM</span>
-    </a>
-  </header>
-
-  <!-- AUTHENTICATION CONTAINER -->
-  <div class="auth-container">
+  <div class="auth-container" id="authContainer">
     
-    <!-- LOGIN FORM -->
-    <div class="auth-card" id="loginCard">
-      <div class="auth-header">
-        <h1 class="auth-title">ACCESS VAULT</h1>
-        <p class="auth-subtitle">Enter your credentials to manage sovereign assets.</p>
+    <!-- SIGN IN FORM -->
+    <div class="form-container sign-in-container">
+      <div class="brand-header">
+        <a href="#" class="brand-logo"><i class="fa-solid fa-landmark"></i> A U R E U M</a>
       </div>
 
-      <form id="loginForm">
+      <form id="signInForm">
+        <h2 class="form-title">Sign in</h2>
+        <p class="form-sub">Welcome back to The Royal Ledger asset terminal.</p>
+
         <div class="form-group">
           <label>EMAIL ADDRESS</label>
-          <input type="email" id="loginEmail" placeholder="e.g. user@aureum.com" required>
+          <input type="email" id="signInEmail" placeholder="e.g. user@aureum.com" required>
         </div>
+
         <div class="form-group">
-          <label>PASSWORD</label>
-          <input type="password" id="loginPassword" placeholder="••••••••" required>
+          <label>KEYPHRASE CODE</label>
+          <input type="password" id="signInPassword" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn-submit" id="loginBtn">SIGN IN TO VAULT</button>
+
+        <button type="submit" class="btn-submit" id="signInBtn">INITIALIZE SESSION</button>
+
+        <div class="toggle-link">
+          No account? <span id="toSignUp">Sign up</span>
+        </div>
       </form>
 
-      <div class="auth-toggle">
-        Don't have an asset account? <span onclick="toggleAuth('signup')">Create Account</span>
+      <div class="form-footer">
+        <span>© 2026 Aureum Sovereign Wealth.</span>
+        <span><i class="fa-solid fa-shield"></i></span>
       </div>
     </div>
 
     <!-- SIGN UP FORM -->
-    <div class="auth-card" id="signupCard" style="display: none;">
-      <div class="auth-header">
-        <h1 class="auth-title">CREATE ACCOUNT</h1>
-        <p class="auth-subtitle">Begin your journey with private asset management.</p>
+    <div class="form-container sign-up-container">
+      <div class="brand-header">
+        <a href="#" class="brand-logo"><i class="fa-solid fa-landmark"></i> A U R E U M</a>
       </div>
 
-      <form id="signupForm">
+      <form id="signUpForm">
+        <h2 class="form-title">Create Account</h2>
+        <p class="form-sub">Begin your journey with private asset management.</p>
+
         <div class="form-group">
           <label>FULL NAME</label>
-          <input type="text" id="signupName" placeholder="e.g. Rohan Singh" required>
+          <input type="text" id="signUpName" placeholder="e.g. Alexander Vance" required>
         </div>
+
         <div class="form-group">
           <label>EMAIL ADDRESS</label>
-          <input type="email" id="signupEmail" placeholder="e.g. user@aureum.com" required>
+          <input type="email" id="signUpEmail" placeholder="e.g. user@aureum.com" required>
         </div>
+
         <div class="form-group">
-          <label>PASSWORD</label>
-          <input type="password" id="signupPassword" placeholder="••••••••" required>
+          <label>KEYPHRASE CODE</label>
+          <input type="password" id="signUpPassword" placeholder="••••••••" required>
         </div>
-        <button type="submit" class="btn-submit" id="signupBtn">REGISTER VAULT</button>
+
+        <button type="submit" class="btn-submit" id="signUpBtn">REGISTER VAULT</button>
+
+        <div class="toggle-link">
+          Already registered? <span id="toSignIn">Sign in</span>
+        </div>
       </form>
 
-      <div class="auth-toggle">
-        Already have an account? <span onclick="toggleAuth('login')">Sign In</span>
+      <div class="form-footer">
+        <span>© 2026 Aureum Sovereign Wealth.</span>
+        <span><i class="fa-solid fa-shield"></i></span>
+      </div>
+    </div>
+
+    <!-- OVERLAY CONTAINER -->
+    <div class="overlay-container">
+      <div class="overlay">
+        <div class="overlay-panel overlay-right">
+          <h1 class="overlay-title">Start Your<br>Global Legacy</h1>
+          <p class="overlay-desc">Navigate the complexities of international asset tracking with precision framework architecture. Your sovereign capital balance, secured elegantly.</p>
+        </div>
+        <div class="overlay-panel overlay-left">
+          <h1 class="overlay-title">Secure Your<br>Wealth Vault</h1>
+          <p class="overlay-desc">Join an elite tier of asset allocation and expense monitoring. Streamlined, confidential, and completely aligned with your financial vision.</p>
+        </div>
       </div>
     </div>
 
@@ -107,30 +152,33 @@
   <script src="config.js"></script>
 
   <script>
-    // Toggle between Sign In and Sign Up Cards
-    function toggleAuth(mode) {
-      const loginCard = document.getElementById('loginCard');
-      const signupCard = document.getElementById('signupCard');
+    const authContainer = document.getElementById('authContainer');
+    const toSignUp = document.getElementById('toSignUp');
+    const toSignIn = document.getElementById('toSignIn');
 
-      if (mode === 'signup') {
-        loginCard.style.display = 'none';
-        signupCard.style.display = 'block';
-      } else {
-        signupCard.style.display = 'none';
-        loginCard.style.display = 'block';
-      }
+    // Panel Toggle Events (Sliding UI effect)
+    if (toSignUp) {
+      toSignUp.addEventListener('click', () => {
+        authContainer.classList.add('right-panel-active');
+      });
     }
 
-    // 1. SIGN IN LOGIC (LOGIN API)
-    document.getElementById('loginForm').onsubmit = async function(e) {
+    if (toSignIn) {
+      toSignIn.addEventListener('click', () => {
+        authContainer.classList.remove('right-panel-active');
+      });
+    }
+
+    // 1. SIGN IN SUBMIT (POST /api/auth/login)
+    document.getElementById('signInForm').addEventListener('submit', async function(e) {
       e.preventDefault();
+      
+      const email = document.getElementById('signInEmail').value;
+      const password = document.getElementById('signInPassword').value;
+      const submitBtn = document.getElementById('signInBtn');
 
-      const btn = document.getElementById('loginBtn');
-      btn.innerText = "AUTHENTICATING...";
-      btn.disabled = true;
-
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
+      submitBtn.innerText = "AUTHENTICATING...";
+      submitBtn.disabled = true;
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
@@ -142,35 +190,32 @@
         const data = await response.json();
 
         if (response.ok) {
-          // Store token and user data in localStorage
           localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
-
-          // Redirect to main Dashboard
-          window.location.href = "dashboard.html";
+          window.location.href = 'dashboard.html';
         } else {
-          alert(data.message || "Authentication failed. Check your credentials.");
+          alert(data.message || 'Authentication failed. Please check credentials.');
         }
       } catch (error) {
-        console.error("Login Error:", error);
-        alert("Server connection failed. Please ensure the backend server is active.");
+        console.error('Login Error:', error);
+        alert('Server connection failed. Please ensure backend server is active.');
       } finally {
-        btn.innerText = "SIGN IN TO VAULT";
-        btn.disabled = false;
+        submitBtn.innerText = "INITIALIZE SESSION";
+        submitBtn.disabled = false;
       }
-    };
+    });
 
-    // 2. SIGN UP LOGIC (REGISTER API)
-    document.getElementById('signupForm').onsubmit = async function(e) {
+    // 2. SIGN UP SUBMIT (POST /api/auth/register)
+    document.getElementById('signUpForm').addEventListener('submit', async function(e) {
       e.preventDefault();
 
-      const btn = document.getElementById('signupBtn');
-      btn.innerText = "CREATING ACCOUNT...";
-      btn.disabled = true;
+      const name = document.getElementById('signUpName').value;
+      const email = document.getElementById('signUpEmail').value;
+      const password = document.getElementById('signUpPassword').value;
+      const submitBtn = document.getElementById('signUpBtn');
 
-      const name = document.getElementById('signupName').value;
-      const email = document.getElementById('signupEmail').value;
-      const password = document.getElementById('signupPassword').value;
+      submitBtn.innerText = "CREATING VAULT...";
+      submitBtn.disabled = true;
 
       try {
         const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
@@ -182,20 +227,20 @@
         const data = await response.json();
 
         if (response.ok) {
-          alert("Account created successfully! Please sign in with your credentials.");
+          alert('Vault Created Successfully! Please sign in.');
           this.reset();
-          toggleAuth('login');
+          authContainer.classList.remove('right-panel-active');
         } else {
-          alert(data.message || "Account creation failed.");
+          alert(data.message || 'Registration failed.');
         }
       } catch (error) {
-        console.error("Registration Error:", error);
-        alert("Server connection failed. Please try again.");
+        console.error('Register Error:', error);
+        alert('Server connection failed. Please try again.');
       } finally {
-        btn.innerText = "REGISTER VAULT";
-        btn.disabled = false;
+        submitBtn.innerText = "REGISTER VAULT";
+        submitBtn.disabled = false;
       }
-    };
+    });
   </script>
 </body>
 </html>
