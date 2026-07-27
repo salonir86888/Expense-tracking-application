@@ -15,15 +15,20 @@ app.use(express.json());
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/expense', require('./routes/expense'));
-app.use('/api/budget', require('./routes/budget')); // <-- BUDGET ROUTE ADDED HERE
+app.use('/api/budget', require('./routes/budget'));
 
 // Test Route
 app.get('/', (req, res) => {
     res.send('Aureum Expense Tracker Server is Running!');
 });
 
-// Server Start
+// Server Start (Listens locally, exports module for Vercel Serverless)
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server started on http://localhost:${PORT}`);
-});
+
+if (process.env.NODE_ENV !== 'production') {
+    app.listen(PORT, () => {
+        console.log(`Server started on http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;
